@@ -85,7 +85,7 @@ $$
 
 Выборочная ковариационная матрица $\widetilde{\mathbf W}_{3M \times 3M}$ выходных сигналов решётки:
 
-$$
+$$ 
 \widetilde{\mathbf W} = \frac{1}{N}
 \begin{bmatrix}
 y_0^{(1)}(1) & y_0^{(1)}(2) & \cdots & y_0^{(1)}(N) \\
