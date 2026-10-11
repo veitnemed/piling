@@ -90,3 +90,4 @@ def get_barlet_values(phis: np.ndarray,
 def score_phi(phi_vector: np.ndarray, e_values: np.ndarray) -> float:
     """Определяем угол по максимум аргумента Барлета"""
     return phi_vector[np.argmax(e_values)]
+

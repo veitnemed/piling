@@ -1,59 +1,59 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import config as cfg 
+from config import (SENSOR_COUNTS, SNR_VALUES, FIX_SIGMA, REALESATION_COUNT, STANDART_DIVIATONS_NOISE)
+import time
 
-from functions import (get_gamma_array,
+from functions import (
                        get_tau_array,
-                       get_sin_signal,
                        get_covariation_matrix,
-                       get_avp_signals,
-                       get_noise,
                        get_channel_matrix,
-                       get_barlet_value,
                        get_barlet_values,
                        score_phi)
 
-target_phi = np.pi
 
-
-
-
-
-
-def angle_estimation(sigma_noise) -> float:
-     
-    tau_array = get_tau_array(cfg.M, cfg.R, target_phi)
-    channel_matrix = get_channel_matrix(t = cfg.t,
-                                    f = cfg.f,
-                                    phi_0 = target_phi,
-                                    tau_array = tau_array,
-                                    noise_level = sigma_noise,
-                                    A = cfg.A,
-                                    M = cfg.M,
-                                    N = cfg.N)
+def single_error(sigma_noise, M) -> float:
+    """Считает ошибку для одного эсперемента"""
+    
+    tau_array = get_tau_array(M, cfg.R, cfg.target_phi)
+    channel_matrix = get_channel_matrix(t = cfg.t, f = cfg.f, phi_0 = cfg.target_phi, tau_array = tau_array, noise_level = sigma_noise, A = cfg.A, M = M, N = cfg.N)
     W = get_covariation_matrix(channel_matrix, cfg. N)
-    E_barlett = get_barlet_values(cfg.phi_vector, cfg.M, W)
+    E_barlett = get_barlet_values(cfg.phi_vector, M, W)
     est = score_phi(cfg.phi_vector, E_barlett)
-    delta = np.abs(target_phi - est)
+    delta = np.abs(cfg.target_phi - est)
     return delta
 
-def averaged_estimate(sigma_noise: float, K: int,) -> float:
-    return sum([angle_estimation(sigma_noise) for _ in range(K)])/K
+def calculate_mae(sigma_noise: float, K: int,M) -> float:
+    """Считает среднюю ошибку по множеству равлизаций"""
+    return sum([single_error(sigma_noise, M) for _ in range(K)])/K
 
-def dependence_on_noise_level(sigma_values, K, ):
-    return [averaged_estimate(sigma, K) for sigma in sigma_values]
+def mae_vs_snr(sigma_values, K, M):
+    """Знеачне ощибки при изменении значения C/Ш"""
+    return [calculate_mae(sigma, K, M) for sigma in sigma_values]
 
-K = 10
+def mae_vs_sensor_count(sigma, K, M_values):
+    """Значенеи ошибки при изменении r """
+    return [calculate_mae(sigma, K, M) for M in M_values]
 
-snr_values = np.array([0.01, 0.1, 0.2, 1, 2, 5, 10])
-sigma_values = cfg.A / snr_values
-print(sigma_values)
+start_time = time.perf_counter()
+snr_maes = mae_vs_snr(STANDART_DIVIATONS_NOISE, REALESATION_COUNT, cfg.M)
+sensor_maes = mae_vs_sensor_count(FIX_SIGMA, REALESATION_COUNT, SENSOR_COUNTS)
+end_time = time.perf_counter()
+delta_time = end_time - start_time
+print(f"Время рассчёта {round(delta_time,2)} сек.")
 
+plt.plot(SNR_VALUES, snr_maes)
+plt.title("Зависимость " + r"$\varepsilon$" + " от SNR ")
+plt.ylabel("Ошибка оценки (МАЕ) " + r"$\varepsilon$" + ", рад.")
+plt.xlabel("Отношение сигнал/шум  M, шт")
+plt.grid(True)
+plt.show()
 
-
-v = dependence_on_noise_level(sigma_values, K)
-
-plt.plot(snr_values, v)
+plt.plot(SENSOR_COUNTS, sensor_maes)
+plt.title("Зависимость " + r"$\varepsilon$" + " от M  (Кол-во датчиков) ")
+plt.ylabel("Ошибка оценки (МАЕ) " + r"$\varepsilon$" + ", рад.")
+plt.xlabel("Колчиество датчиков M, шт")
+plt.grid(True)
 plt.show()
 
 
