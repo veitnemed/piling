@@ -19,12 +19,15 @@ A = 1 # АМПЛИТУДА СИГНАЛА
 target_phi = np.pi/2 # АЗИМУТ ПОД КОТОРЫМ ПРИХОДИТ ИСГНАЛ (ТО ЧТО ОЦЕНИВАЕМ)
 
 # Параметры шумы
-sigma_noise = 0.01
-REALESATION_COUNT = 1000
+sigma_noise = 0.5
+REALESATION_COUNT = 50
 SNR_VALUES = np.array(list(range(1,11)))
 STANDART_DIVIATONS_NOISE = A / np.sqrt(SNR_VALUES)
 SENSOR_COUNTS = [1, 2, 3, 4, 5, 7, 10]
 
+R_min = 0.1
+R_max = 10.0
+R_VALUES = np.linspace(R_min, R_max, 10)
 
 FIX_SIGMA = 0.3
 TIME_LIMIT = {"left": 0,
