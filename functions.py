@@ -79,18 +79,13 @@ def get_direction_matrix(phis,M):
     
 
 
-def get_barlet_value(phi: float,
-                 M: int,
-                 W: np.ndarray) -> float:
-    """Функция возвращает значение функции Бврлета для одного угла"""
-    a = get_direction_vector(phi, M)
-    return a.T @ W @ a
+
 
 def get_barlet_values(
                  W: np.ndarray,
                  dir_matrix: np.ndarray) -> list:
     
-    return np.diag(dir_matrix @ W @ dir_matrix.T)
+    return np.sum((dir_matrix @ W ) * dir_matrix, axis=1)
 
 
 def score_phi(phi_vector: np.ndarray, e_values: np.ndarray) -> float:
