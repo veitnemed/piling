@@ -25,7 +25,7 @@ target_phi = np.pi/2 # АЗИМУТ ПОД КОТОРЫМ ПРИХОДИТ ИС�
 
 # Параметры шумы
 sigma_noise = 0.5
-REALESATION_COUNT = 50
+REALESATION_COUNT = 4
 SNR_VALUES = np.array(list(range(1,11)))
 STANDART_DIVIATONS_NOISE = A / np.sqrt(SNR_VALUES)
 SENSOR_COUNTS = [1, 2, 3, 4, 5, 7, 10]
