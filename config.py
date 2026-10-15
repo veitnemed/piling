@@ -12,7 +12,7 @@ N_phi = int(2*np.pi/delta_phi) # Количество значений угла
 phi_vector = np.linspace(0,2*np.pi,N_phi,endpoint= False) # Значения угла от 0 до 2П
 
 # ПАРАМЕТРЫ АВП
-M = 5 # КОЛИЧЕСТВО ДАТЧИКОВ
+M = 3 # КОЛИЧЕСТВО ДАТЧИКОВ
 c = 343.26 # СКОРОСТЬ ЗВУКА
 
 
@@ -25,8 +25,8 @@ target_phi = np.pi/2 # АЗИМУТ ПОД КОТОРЫМ ПРИХОДИТ ИС�
 
 
 # Параметры шумы
-sigma_noise = 1
-REALESATION_COUNT = 10
+sigma_noise = 0.5
+REALESATION_COUNT = 500
 SNR_VALUES = np.array(list(range(1,11)))
 STANDART_DIVIATONS_NOISE = A / np.sqrt(SNR_VALUES)
 
@@ -40,7 +40,7 @@ R_min = 0.1
 R_max = 10.0
 R_VALUES = np.linspace(R_min, R_max, 10)
 
-FIX_SIGMA = 0.3
+FIX_SIGMA = 0.447
 TIME_LIMIT = {"left": 0,
         "right": 0.15}
 
