@@ -69,9 +69,15 @@ def get_covariation_matrix(matrix: np.ndarray,
                                 N: int) -> np.ndarray:
     return (matrix @ matrix.T) / N
 
-def get_direction_vector(phi_0: float, M: int) -> np.ndarray:
+def get_direction_vector(phi: float, M: int) -> np.ndarray:
     """Направляющий вектор"""
-    return np.array([1,np.cos(phi_0),np.sin(phi_0)]*M).T
+    return np.array([1,np.cos(phi),np.sin(phi)]*M).T
+
+def get_direction_matrix(phis,M):
+    """Рассчёт матрицы направляющих векторов"""
+    return np.array([get_direction_vector(phi, M) for phi in phis])
+    
+
 
 def get_barlet_value(phi: float,
                  M: int,
@@ -80,11 +86,11 @@ def get_barlet_value(phi: float,
     a = get_direction_vector(phi, M)
     return a.T @ W @ a
 
-def get_barlet_values(phis: np.ndarray,
-                 M: int,
-                 W: np.ndarray) -> list:
+def get_barlet_values(
+                 W: np.ndarray,
+                 dir_matrix: np.ndarray) -> list:
     
-    return [get_barlet_value(phi, M, W) for phi in phis]
+    return np.diag(dir_matrix @ W @ dir_matrix.T)
 
 
 def score_phi(phi_vector: np.ndarray, e_values: np.ndarray) -> float:
