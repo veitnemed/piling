@@ -29,7 +29,7 @@ def single_est(sigma_noise, M, R, target_phi, dir_matrix) -> float:
 
 
 def single_error(est, target_phi):
-    return (est - target_phi)%2*np.pi - np.pi
+    return (est - target_phi)%(2*np.pi) - np.pi
 
 def list_errors(sigma_noise: float, K: int, M, R, phis, target_phi=cfg.target_phi) -> float:
     dir_matrix = get_direction_matrix(phis, M)
