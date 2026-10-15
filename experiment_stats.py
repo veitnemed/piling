@@ -11,8 +11,7 @@ from functions import (
                        get_direction_matrix)
 
 
-def single_error(est, target_phi):
-    return np.abs((est - target_phi + np.pi) % (2 * np.pi) - np.pi)
+
 
 def single_est(sigma_noise, M, R, target_phi, dir_matrix) -> float:
     """Считаем оценку по одной ревлизации шума"""
@@ -28,35 +27,42 @@ def single_est(sigma_noise, M, R, target_phi, dir_matrix) -> float:
 
 
 
-def variance_vs_phis(sigma_noise, K, M, R, phi_values):
-    return [
-        calculate_mae(sigma_noise, K, M, R, phi)
-        for phi in phi_values
-    ]
-def calculate_mae(sigma_noise: float, K: int, M, R, phis, target_phi=cfg.target_phi) -> float:
+
+def single_error(est, target_phi):
+    return (est - target_phi)%2*np.pi - np.pi
+
+def list_errors(sigma_noise: float, K: int, M, R, phis, target_phi=cfg.target_phi) -> float:
     dir_matrix = get_direction_matrix(phis, M)
-    return sum([single_error(single_est(sigma_noise, M, R, target_phi, dir_matrix), target_phi) for _ in range(K)]) / K
+    return [single_error(single_est(sigma_noise, M, R, target_phi, dir_matrix), target_phi) for _ in range(K)]
 
-def mae_vs_phis(sigma_noise, K, M, R, phi_values):
-    
-    
-    return [calculate_mae(sigma_noise, K, M, R, phi) for phi in phi_values]
+def calculate_variance(list_errors):
+    var = 0
+    K = len(list_errors)
+    m_error = sum(list_errors)/K
+    for error in list_errors:
+        var += (m_error - error)**2
+    return var/(K-1) 
 
-def variance_vs_snr(sigma_values, K, M, R,phis):
+
+def var_vs_phis(sigma_noise, K, M, R, phi_values,phis):
+    return [calculate_variance(list_errors(sigma_noise, K, M, R, phis, target_phi= phi)) 
+            for phi in phi_values]
+
+def var_vs_snr(sigma_values, K, M, R,phis):
     """Знеачне ощибки при изменении значения C/Ш"""
-    return [calculate_mae(sigma, K, M, R, phis) for sigma in sigma_values]
+    return [calculate_variance(list_errors(sigma, K, M, R, phis)) for sigma in sigma_values]
 
-def variance_vs_sensor_count(sigma, K, M_values, R,phis):
+def var_vs_sensor_count(sigma, K, M_values, R,phis):
     """Значенеи ошибки при изменении r """
-    return [calculate_mae(sigma, K, M, R,phis) for M in M_values]
+    return [calculate_variance(list_errors(sigma, K, M, R,phis)) for M in M_values]
 
-def variance_vs_radius(sigma, K, M, R_values,phis):
+def var_vs_radius(sigma, K, M, R_values,phis):
     """Значение ошибки при изменении радиуса решетки"""
-    return [calculate_mae(sigma, K, M, R,phis) for R in R_values]
+    return [calculate_variance(list_errors(sigma, K, M, R,phis)) for R in R_values]
 
-def variance_vs_alpha(sigma, K, M, alpha_values, phis):
+def var_vs_alpha(sigma, K, M, alpha_values, phis):
     """Значение ошибки при изменении альфа"""
-    return [calculate_mae(sigma, K, M, cfg.c/(2*cfg.f*alpha), phis) for alpha in alpha_values]
+    return [calculate_variance(list_errors(sigma, K, M, cfg.c/(2*cfg.f*alpha), phis)) for alpha in alpha_values]
 
 
 

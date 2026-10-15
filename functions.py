@@ -79,8 +79,6 @@ def get_direction_matrix(phis,M):
     
 
 
-
-
 def get_barlet_values(
                  W: np.ndarray,
                  dir_matrix: np.ndarray) -> list:
