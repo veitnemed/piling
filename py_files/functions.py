@@ -1,5 +1,5 @@
 import numpy as np
-import config as cfg
+import py_files.config as cfg
 
 def get_gamma_array(M: int) -> np.ndarray:
     """Рассчет углов датчиков относительно оси x
