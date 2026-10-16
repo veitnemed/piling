@@ -31,7 +31,7 @@ R1 = 1
 
 # Параметры шумы
 sigma_noise = 0.5
-REALESATION_COUNT = 10
+REALESATION_COUNT = 100
 SNR_VALUES = np.array(list(range(1,11)))
 STANDART_DIVIATONS_NOISE = A / np.sqrt(SNR_VALUES)
 

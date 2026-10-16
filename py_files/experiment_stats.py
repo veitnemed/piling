@@ -67,7 +67,7 @@ def var_vs_alpha(f, sigma, K, M, alpha_values, phis):
 
 def var_vs_alpha2(sigma, K, M, alpha_values, phis):
     """Значение ошибки при изменении альфа"""
-    return [calculate_variance(list_errors(cfg.c/(2*cfg.R*alpha), sigma, K, M, cfg.R1, phis)) for alpha in alpha_values]
+    return [calculate_variance(list_errors(cfg.c/(2*cfg.R1*alpha), sigma, K, M, cfg.R1, phis)) for alpha in alpha_values]
 
 
 
