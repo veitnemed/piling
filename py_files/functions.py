@@ -79,14 +79,21 @@ def get_direction_matrix(phis,M):
     
 
 
-def get_barlet_values(
+def get_cap_values(
                  W: np.ndarray,
                  dir_matrix: np.ndarray) -> list:
     
-    return np.sum((dir_matrix @ W ) * dir_matrix, axis=1)
+    W_inv = np.linalg.inv(W)
+    
+    return 1/( np.sum((dir_matrix @ W_inv ) * dir_matrix, axis=1))
 
 
 def score_phi(phi_vector: np.ndarray, e_values: np.ndarray) -> float:
     """Определяем угол по максимум аргумента Барлета"""
     return phi_vector[np.argmax(e_values)]
 
+def get_barlet_values(
+                 W: np.ndarray,
+                 dir_matrix: np.ndarray) -> list:
+    
+    return np.sum((dir_matrix @ W ) * dir_matrix, axis=1)

@@ -6,7 +6,7 @@ from py_files.functions import (
                        get_tau_array,
                        get_covariation_matrix,
                        get_channel_matrix,
-                       get_barlet_values,
+                       get_cap_values,
                        score_phi,
                        get_direction_matrix)
 
@@ -21,7 +21,7 @@ def single_est(sigma_noise, M, R,f0, target_phi, dir_matrix) -> float:
                                        tau_array=tau_array, noise_level=sigma_noise, 
                                        A=cfg.A, M=M, N=cfg.N)
     W = get_covariation_matrix(channel_matrix, cfg.N)
-    E_barlett = get_barlet_values(W, dir_matrix)
+    E_barlett = get_cap_values(W, dir_matrix)
     est = score_phi(cfg.phi_vector, E_barlett)
     return est
 

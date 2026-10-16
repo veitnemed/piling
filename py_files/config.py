@@ -31,14 +31,14 @@ R1 = 1
 
 # Параметры шумы
 sigma_noise = 0.5
-REALESATION_COUNT = 100
+REALESATION_COUNT = 50
 SNR_VALUES = np.array(list(range(1,11)))
 STANDART_DIVIATONS_NOISE = A / np.sqrt(SNR_VALUES)
 
 # ПАРАМЕТРЫ ЭКСПЕРИМЕНТА 
 
 SENSOR_COUNTS = [1, 2, 3, 4, 5, 7, 10]
-ALPHA_VALUES_2 = np.arange(0, 1, 0.01)
+ALPHA_VALUES_2 = np.arange(0.6, 0.7, 0.001)
 ALPHA_VALUES_1 = np.arange(1,10,1)
 
 R_min = 0.1
