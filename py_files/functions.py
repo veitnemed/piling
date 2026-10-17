@@ -23,15 +23,15 @@ def get_sin_signal(t: np.ndarray,
     
     return  A*np.sin(t*(2*np.pi*f))
 
-def get_noise(scale):
+def get_noise(level: float) -> np.ndarray:
     """Генрация помех"""
-    return np.random.normal(loc = 0, scale = scale, size = cfg.N)
+    return np.random.normal(loc = 0, scale = level, size = cfg.N)
 
 def get_avp_signals(
                       p_t: np.ndarray,
                       phi_0: float,
                       noise_level: float = 0) -> dict:
-    """Рассчёт y0 y1 y2 для АВП"""
+    """Рассчёт значений каналов y0 y1 y2 для АВП"""
     
     y0 = p_t + get_noise(noise_level) # size (1 x N)
     y1 = p_t*np.cos(phi_0) + get_noise(noise_level)
@@ -50,7 +50,7 @@ def get_channel_matrix(
                       tau_array: np.ndarray,
                       M: int,
                       N: int,
-                      noise_level: float = cfg.sigma_noise,
+                      noise_level: float = cfg.NOISE_LEVEL,
                       A: float = 1.0) -> np.ndarray:
     """Функция возращает матрицу 3M x N со значениями для каждого из трёх каналов датчика АВП"""
     
@@ -66,34 +66,34 @@ def get_channel_matrix(
     return channel_matrix
 
 def get_covariation_matrix(matrix: np.ndarray,
-                                N: int) -> np.ndarray:
-    return (matrix @ matrix.T) / N
+                           realisation_count: int) -> np.ndarray:
+    """Рассчёт ковариационной матрицы"""
+    return (matrix @ matrix.T) / realisation_count
 
 def get_direction_vector(phi: float, M: int) -> np.ndarray:
     """Направляющий вектор"""
     return np.array([1,np.cos(phi),np.sin(phi)]*M).T
 
-def get_direction_matrix(phis,M):
+def get_direction_matrix(phis: np.ndarray, M: int):
     """Рассчёт матрицы направляющих векторов"""
     return np.array([get_direction_vector(phi, M) for phi in phis])
-    
 
 
 def get_cap_values(
                  W: np.ndarray,
                  dir_matrix: np.ndarray) -> list:
-    
+    """Рассчёт значений энергетического спектра  Кейпона"""
     W_inv = np.linalg.inv(W)
     
     return 1/( np.sum((dir_matrix @ W_inv ) * dir_matrix, axis=1))
 
 
-def score_phi(phi_vector: np.ndarray, e_values: np.ndarray) -> float:
+def get_est_phi(phi_vector: np.ndarray, e_values: np.ndarray) -> float:
     """Определяем угол по максимум аргумента Барлета"""
     return phi_vector[np.argmax(e_values)]
 
 def get_barlet_values(
                  W: np.ndarray,
                  dir_matrix: np.ndarray) -> list:
-    
+    """Рассчёт значений энергетического спектра  Барлета"""
     return np.sum((dir_matrix @ W ) * dir_matrix, axis=1)

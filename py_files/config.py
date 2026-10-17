@@ -20,32 +20,32 @@ c = 343.26 # СКОРОСТЬ ЗВУКА
 f = 10 # ЦЕНТРАЛЬНАЯ ЧАСТОТА СИГНАЛА 
 A = 1 # АМПЛИТУДА СИГНАЛА 
 alpha = 10
-R = c/(2*f*alpha)
-target_phi = np.pi/2 # АЗИМУТ ПОД КОТОРЫМ ПРИХОДИТ ИСГНАЛ (ТО ЧТО ОЦЕНИВАЕМ)
+R = c / (2*f*alpha)
+TARGET_PHI = np.pi/2 # АЗИМУТ ПОД КОТОРЫМ ПРИХОДИТ ИСГНАЛ (ТО ЧТО ОЦЕНИВАЕМ)
 
 f1 = c/(2*R*alpha)
 R1 = 1
 
-
-
-
 # Параметры шумы
-sigma_noise = 0.5
-REALESATION_COUNT = 50
-SNR_VALUES = np.array(list(range(1,11)))
-STANDART_DIVIATONS_NOISE = A / np.sqrt(SNR_VALUES)
+
+REALESATION_COUNT = 500
 
 # ПАРАМЕТРЫ ЭКСПЕРИМЕНТА 
 
-SENSOR_COUNTS = [1, 2, 3, 4, 5, 7, 10]
-ALPHA_VALUES_2 = np.arange(0.6, 0.7, 0.001)
+SENSOR_VALUES = [1, 2, 3, 4, 5, 7, 10]
+SNR_VALUES = np.linspace(1, 4, 5)
+SNR_VALUES_2 = np.linspace(5, 20, 5)
+ALPHA_VALUES_2 = np.arange(0,1, 0.01)
 ALPHA_VALUES_1 = np.arange(1,10,1)
-
 R_min = 0.1
 R_max = 10.0
 R_VALUES = np.linspace(R_min, R_max, 10)
 
-FIX_SIGMA = 0.3
+
+STANDART_DIVIATONS_NOISE = A/np.sqrt(np.array(SNR_VALUES))
+
+
+NOISE_LEVEL = 0.3
 TIME_LIMIT = {"left": 0,
         "right": 0.15}
 
