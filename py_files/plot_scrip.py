@@ -3,6 +3,7 @@ from matplotlib import pyplot as plt
 import py_files.config as cfg
 import time
 import py_files.experiment_stats as es
+from collections.abc import Callable
 
 PI_AXIS = { "ticks": np.arange(9) * np.pi / 4,
             "labels": [
@@ -18,34 +19,50 @@ PI_AXIS = { "ticks": np.arange(9) * np.pi / 4,
                 ]
         
     }
+COLORS = ["red", "green", "blues"]
 
-def plot_variance_vs_param(method_sheme: dict, snr_values: np.ndarray = cfg.SNR_VALUES):
+def plot_variance_vs_param(est_methods: dict[Callable],
+                           config_params: dict,
+                           parametr_name: str,
+                           title: str,
+                           parametr_values: np.ndarray = cfg.SNR_VALUES1,
+
+                           x_size: str = None,
+                           y_label: str = r"$s_{\varepsilon}^{2}$",
+                           y_size: str = r"$рад$^2$"
+                           ):
     """Функция строит график зависимости дисперсии оценки от SNR для двух методов"""
     
     start_time = time.perf_counter()
-  
-    maes = [es.var_vs_snr(energy_func, cfg.f, cfg.STANDART_DIVIATONS_NOISE, cfg.REALESATION_COUNT, cfg.M, cfg.R,phis=cfg.phi_vector) for energy_func in method_sheme.values() ]
+    vars = {name_func: es.var_vs_params(config_params = config_params,
+                                        energy_func = energy_func,
+                                        parametr_name = parametr_name,
+                                        parametr_values = parametr_values,
+                                        phis = cfg.phi_vector) 
+                             for name_func, energy_func in est_methods.items()}
+        
     end_time = time.perf_counter()
     delta_time = end_time - start_time
 
 
     _, ax = plt.subplots(1, 1, figsize=(14, 6), constrained_layout=True)
-
-    ax.plot(snr_values, maes[0], color = "blue", label =  list(method_sheme.keys())[0])
-    ax.plot(snr_values, maes[1], color = "red", label = list(method_sheme.keys())[1])
-    ax.set_xlabel("SNR", fontsize=18)
-    ax.set_ylabel(r"$s_{\varepsilon}^{2}$" + ", рад$^2$", fontsize=18)
-    ax.set_title("Зависимость " + r"$s_{\varepsilon}^{2}$," + " от SNR", fontsize=24)
+    for idx, (method, var) in enumerate(vars.items()):
+        ax.plot(parametr_values, var, color = COLORS[idx], label =  method)
+    if x_size is None:
+        x_size = ""
+    ax.set_xlabel(parametr_name + x_size, fontsize=18)
+    ax.set_ylabel(y_label + y_size, fontsize=18)
+    ax.set_title("Зависимость " + y_label + f"от SNR", fontsize=24)
     ax.grid(True)
     ax.legend()
 
     info = (
-        "Кейпон vs Барлет\n\n"
+        
         f"Центральная частота сигнала: {cfg.f} Гц\n"
-        f"Радиус решетки: {round(cfg.R, 2)}\n"
-        f"Количество датчиков: {cfg.M}\n"
-        f"SNR от {snr_values[0]} до {snr_values[-1]} ({len(snr_values)} значений)\n\n"
-        f"Количество реализаций шума: {cfg.REALESATION_COUNT}\n"
+        f"Радиус решетки: {round(config_params["R"], 2)}\n"
+        f"Количество датчиков: {config_params["M"]}\n"
+        f"{parametr_name} от {parametr_values[0]} до {parametr_values[-1]} ({len(parametr_values)} значений)\n\n"
+        f"Количество реализаций шума: {config_params["K"]}\n"
         f"Время рассчёта: {round(delta_time,2)} сек."
     )
 

@@ -12,21 +12,6 @@ from py_files.functions import (
                        get_direction_matrix)
 
 
-def config_params_dict(noise_level: float, 
-                        M: int, 
-                        R: float, 
-                        f0: float,
-                        K: int,
-                        target_phi: float = cfg.TARGET_PHI) -> dict:
-    return {
-        "noise_level": noise_level,
-        "M": M,
-        "R": R,
-        "f0": f0,
-        "K": K,
-        "traget_phi": target_phi
-    }
-
 def single_est(config_params: dict,
                dir_matrix: np.ndarray,
                energy_func) -> float:
@@ -80,6 +65,7 @@ def var_vs_params(config_params: dict,
                   parametr_values: np.ndarray | list):
     """Универсальная фанкция для построения зависимость дисперссии от параметра моделирования"""
     result = []
+    config_params = config_params.copy()
     for value in parametr_values:
         config_params[parametr_name] = value
         lst = list_errors(config_params, energy_func,  phis)
@@ -88,6 +74,7 @@ def var_vs_params(config_params: dict,
 
 def var_vs_phis(config_params, energy_func, phis, phi_values):
     result = []
+    config_params = config_params.copy()
     for phi  in phi_values:
         config_params["target_phi"] = phi
         lst = list_errors(config_params, energy_func,  phis)
@@ -97,6 +84,7 @@ def var_vs_phis(config_params, energy_func, phis, phi_values):
 def var_vs_snr(config_params, energy_func, phis, noise_levels):
     """Знеачне ощибки при изменении значения C/Ш"""
     result = []
+    config_params = config_params.copy()
     for noise_level in noise_levels:
         config_params["noise_level"] = noise_level
         lst = list_errors(config_params, energy_func,  phis)
@@ -106,6 +94,7 @@ def var_vs_snr(config_params, energy_func, phis, noise_levels):
 def var_vs_sensor_count(config_params, energy_func, phis, M_values):
     """Значенеи ошибки при изменении r """
     result = []
+    config_params = config_params.copy()
     for M in M_values:
         config_params["M"] = M
         lst = list_errors(config_params, energy_func,  phis)
@@ -116,6 +105,7 @@ def var_vs_radius(config_params, energy_func, phis, R_values):
     """Значение ошибки при изменении радиуса решетки"""
     
     result = []
+    config_params = config_params.copy()
     for R in R_values:
         config_params["R"] = R
         lst = list_errors(config_params, energy_func,  phis)

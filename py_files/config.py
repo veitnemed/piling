@@ -33,8 +33,12 @@ REALESATION_COUNT = 500
 # ПАРАМЕТРЫ ЭКСПЕРИМЕНТА 
 
 SENSOR_VALUES = [1, 2, 3, 4, 5, 7, 10]
-SNR_VALUES = np.linspace(1, 4, 5)
-SNR_VALUES_2 = np.linspace(5, 20, 5)
+
+SNR_VALUES1 = np.linspace(1, 10, 10)
+SNR_VALUES2 = np.linspace(5, 20, 5)
+NOISE_LEVEL_VALUES1 = A/np.sqrt(SNR_VALUES1)
+NOISE_LEVEL_VALUES2 = A/np.sqrt(SNR_VALUES2)
+
 ALPHA_VALUES_2 = np.arange(0,1, 0.01)
 ALPHA_VALUES_1 = np.arange(1,10,1)
 R_min = 0.1
@@ -42,7 +46,7 @@ R_max = 10.0
 R_VALUES = np.linspace(R_min, R_max, 10)
 
 
-STANDART_DIVIATONS_NOISE = A/np.sqrt(np.array(SNR_VALUES))
+STANDART_DIVIATONS_NOISE = A/np.sqrt(np.array(SNR_VALUES1))
 
 
 NOISE_LEVEL = 0.3
@@ -57,3 +61,4 @@ CONFIG_PARAMETRS = {"noise_level": NOISE_LEVEL,
         "f0": f,
         "K": REALESATION_COUNT,
         "target_phi": TARGET_PHI}
+
