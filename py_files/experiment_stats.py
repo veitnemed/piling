@@ -14,24 +14,18 @@ from py_files.functions import (
 
 def single_est(config_params: dict,
                dir_matrix: np.ndarray,
-               energy_func) -> float:
+               energy_func,
+               phis: np.ndarray) -> float:
     """Считаем оценку по одной ревлизации шума"""
     
-    tau_array = get_tau_array(M = config_params["M"], 
-                              R = config_params["R"], 
-                              phi_o = config_params["target_phi"])
+    tau_array = get_tau_array(config_params)
     channel_matrix = get_channel_matrix(
-                                        M = config_params["M"], 
-                                        f = config_params["f0"], 
-                                        phi_0 = config_params["target_phi"], 
-                                        snr = config_params["snr"],
+                                        config_params = config_params,
                                         t = cfg.t, 
-                                        A = cfg.A, 
-                                        N = cfg.N,
-                                        tau_array = tau_array, )
-    W = get_covariation_matrix(channel_matrix, cfg.N)
+                                        tau_array = tau_array)
+    W = get_covariation_matrix(channel_matrix, config_params["N"])
     Energy_values = energy_func(W, dir_matrix)
-    est = get_est_phi(cfg.phi_vector, Energy_values)
+    est = get_est_phi(phis, Energy_values)
     return est
 
 def single_error(est, target_phi):
@@ -45,7 +39,7 @@ def list_errors(congig_params: dict,
     """Формируем список ошибок для каждой реализации шума"""
     dir_matrix = get_direction_matrix(phis, congig_params["M"])
     
-    return [single_error(single_est(congig_params, dir_matrix, energy_func), congig_params["target_phi"]) 
+    return [single_error(single_est(congig_params, dir_matrix, energy_func, phis), congig_params["target_phi"]) 
             for _ in range(congig_params["K"])]
 
 def calculate_variance(list_errors: list) -> float:
@@ -67,6 +61,8 @@ def var_vs_params(config_params: dict,
     result = []
     config_params = config_params.copy()
     for value in parametr_values:
+        if parametr_name not in config_params:
+            raise KeyError(F"Неизвестный параметр {parametr_name}")
         config_params[parametr_name] = value
         lst = list_errors(config_params, energy_func,  phis)
         result.append(calculate_variance(lst))
@@ -81,36 +77,7 @@ def var_vs_phis(config_params, energy_func, phis, phi_values):
         result.append(calculate_variance(lst))
     return result
 
-def var_vs_snr(config_params, energy_func, phis, noise_levels):
-    """Знеачне ощибки при изменении значения C/Ш"""
-    result = []
-    config_params = config_params.copy()
-    for noise_level in noise_levels:
-        config_params["noise_level"] = noise_level
-        lst = list_errors(config_params, energy_func,  phis)
-        result.append(calculate_variance(lst))
-    return result
-    
-def var_vs_sensor_count(config_params, energy_func, phis, M_values):
-    """Значенеи ошибки при изменении r """
-    result = []
-    config_params = config_params.copy()
-    for M in M_values:
-        config_params["M"] = M
-        lst = list_errors(config_params, energy_func,  phis)
-        result.append(calculate_variance(lst))
-    return result
 
-def var_vs_radius(config_params, energy_func, phis, R_values):
-    """Значение ошибки при изменении радиуса решетки"""
-    
-    result = []
-    config_params = config_params.copy()
-    for R in R_values:
-        config_params["R"] = R
-        lst = list_errors(config_params, energy_func,  phis)
-        result.append(calculate_variance(lst))
-    return result
 
 def var_vs_alpha_f_const(energy_func, f, sigma, K, M, phis, alpha_values):
     """Значение ошибки при изменении альфа"""

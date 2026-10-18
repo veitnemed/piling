@@ -28,16 +28,14 @@ R1 = 1
 
 # Параметры шумы
 
-REALESATION_COUNT = 500
+REALESATION_COUNT = 100
 
 # ПАРАМЕТРЫ ЭКСПЕРИМЕНТА 
 
 SENSOR_VALUES = [1, 2, 3, 4, 5, 7, 10]
 
-SNR_VALUES1 = np.linspace(1, 10, 10)
-SNR_VALUES2 = np.linspace(5, 20, 5)
-NOISE_LEVEL_VALUES1 = A/np.sqrt(SNR_VALUES1)
-NOISE_LEVEL_VALUES2 = A/np.sqrt(SNR_VALUES2)
+SNR_VALUES = np.linspace(0.5, 10, 10)
+NOISE_LEVEL_VALUES = A/np.sqrt(SNR_VALUES)
 
 ALPHA_VALUES_2 = np.arange(0,1, 0.01)
 ALPHA_VALUES_1 = np.arange(1,10,1)
@@ -46,7 +44,7 @@ R_max = 10.0
 R_VALUES = np.linspace(R_min, R_max, 10)
 
 
-STANDART_DIVIATONS_NOISE = A/np.sqrt(np.array(SNR_VALUES1))
+STANDART_DIVIATONS_NOISE = A/np.sqrt(np.array(SNR_VALUES))
 
 SNR = 2
 NOISE_LEVEL = 0.3
@@ -57,8 +55,11 @@ PHI_VALUES = np.linspace(0,2*np.pi,90, endpoint = False)
 
 CONFIG_PARAMETRS = {"snr": SNR,
         "M": M,
+        "N": N,
         "R": R,
         "f0": f,
+        "A": A,
+        "c": c,
         "K": REALESATION_COUNT,
         "target_phi": TARGET_PHI}
 

@@ -8,13 +8,10 @@ def get_gamma_array(M: int) -> np.ndarray:
     
     return (2*np.pi/M)*np.arange(M)
 
-def get_tau_array(M: int, 
-                  R: float, 
-                  phi_o: float, 
-                  c: float = 343.26) -> np.ndarray:
+def get_tau_array(config_parametrs: dict) -> np.ndarray:
     """Рассчёт задержек относительно каждого датчика"""
     
-    return (R/c)*np.cos(phi_o - get_gamma_array(M))
+    return (config_parametrs["R"]/cfg.c)*np.cos(config_parametrs["target_phi"] - get_gamma_array(config_parametrs["M"]))
 
 def get_sin_signal(time_vector: np.ndarray, 
                     f: float,
@@ -44,21 +41,16 @@ def get_avp_signals(
         "y2": y2
     }
 
-def get_channel_matrix(
-                      t: np.ndarray, 
-                      f: float,
-                      phi_0: float,
-                      tau_array: np.ndarray,
-                      M: int,
-                      N: int,
-                      snr: float = cfg.SNR,
-                      A: float = 1.0) -> np.ndarray:
+def get_channel_matrix(config_params: dict,
+                       tau_array,
+                       t: np.ndarray, 
+                    ) -> np.ndarray:
     """Функция возращает матрицу 3M x N со значениями для каждого из трёх каналов датчика АВП"""
     
-    channel_matrix = np.zeros((3*M, N)) # Создаём нулевую матрицу размера M x N
+    channel_matrix = np.zeros((3*config_params["M"], config_params["N"])) # Создаём нулевую матрицу размера M x N
     for idx, tau in enumerate(tau_array):
-        p_t = get_sin_signal(t - tau, f, A)
-        signals = get_avp_signals(p_t, phi_0, snr)
+        p_t = get_sin_signal(t - tau, config_params["f0"], config_params["A"])
+        signals = get_avp_signals(p_t, config_params["target_phi"], config_params["snr"])
 
     
         sensor_matrix = np.vstack((signals["y0"], signals["y1"], signals["y2"])) 
