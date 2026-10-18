@@ -23,19 +23,20 @@ def get_sin_signal(time_vector: np.ndarray,
     
     return  A*np.sin(time_vector*(2*np.pi*f))
 
-def get_noise(noise_level: float) -> np.ndarray:
+def get_noise(snr: float) -> np.ndarray:
     """Генрация помех"""
+    noise_level = cfg.A/np.sqrt(snr)
     return np.random.normal(loc = 0, scale = noise_level, size = cfg.N)
 
 def get_avp_signals(
                       p_t: np.ndarray,
                       phi_0: float,
-                      noise_level: float = 0) -> dict:
+                      snr: float = 0) -> dict:
     """Рассчёт значений каналов y0 y1 y2 для АВП"""
     
-    y0 = p_t + get_noise(noise_level) # size (1 x N)
-    y1 = p_t*np.cos(phi_0) + get_noise(noise_level)
-    y2 = p_t*np.sin(phi_0) + get_noise(noise_level)
+    y0 = p_t + get_noise(snr) # size (1 x N)
+    y1 = p_t*np.cos(phi_0) + get_noise(snr)
+    y2 = p_t*np.sin(phi_0) + get_noise(snr)
         
     return {
         "y0": y0,
@@ -50,14 +51,14 @@ def get_channel_matrix(
                       tau_array: np.ndarray,
                       M: int,
                       N: int,
-                      noise_level: float = cfg.NOISE_LEVEL,
+                      snr: float = cfg.SNR,
                       A: float = 1.0) -> np.ndarray:
     """Функция возращает матрицу 3M x N со значениями для каждого из трёх каналов датчика АВП"""
     
     channel_matrix = np.zeros((3*M, N)) # Создаём нулевую матрицу размера M x N
     for idx, tau in enumerate(tau_array):
         p_t = get_sin_signal(t - tau, f, A)
-        signals = get_avp_signals(p_t, phi_0, noise_level)
+        signals = get_avp_signals(p_t, phi_0, snr)
 
     
         sensor_matrix = np.vstack((signals["y0"], signals["y1"], signals["y2"])) 
@@ -66,9 +67,9 @@ def get_channel_matrix(
     return channel_matrix
 
 def get_covariation_matrix(matrix: np.ndarray,
-                           realisation_count: int) -> np.ndarray:
+                           N: int) -> np.ndarray:
     """Рассчёт ковариационной матрицы"""
-    return (matrix @ matrix.T) / realisation_count
+    return (matrix @ matrix.T) / N
 
 def get_direction_vector(phi: float, M: int) -> np.ndarray:
     """Направляющий вектор"""

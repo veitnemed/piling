@@ -48,14 +48,14 @@ R_VALUES = np.linspace(R_min, R_max, 10)
 
 STANDART_DIVIATONS_NOISE = A/np.sqrt(np.array(SNR_VALUES1))
 
-
+SNR = 2
 NOISE_LEVEL = 0.3
 TIME_LIMIT = {"left": 0,
         "right": 0.15}
 
 PHI_VALUES = np.linspace(0,2*np.pi,90, endpoint = False)
 
-CONFIG_PARAMETRS = {"noise_level": NOISE_LEVEL,
+CONFIG_PARAMETRS = {"snr": SNR,
         "M": M,
         "R": R,
         "f0": f,
