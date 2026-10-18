@@ -50,3 +50,10 @@ TIME_LIMIT = {"left": 0,
         "right": 0.15}
 
 PHI_VALUES = np.linspace(0,2*np.pi,90, endpoint = False)
+
+CONFIG_PARAMETRS = {"noise_level": NOISE_LEVEL,
+        "M": M,
+        "R": R,
+        "f0": f,
+        "K": REALESATION_COUNT,
+        "target_phi": TARGET_PHI}

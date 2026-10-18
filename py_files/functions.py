@@ -16,16 +16,16 @@ def get_tau_array(M: int,
     
     return (R/c)*np.cos(phi_o - get_gamma_array(M))
 
-def get_sin_signal(t: np.ndarray, 
+def get_sin_signal(time_vector: np.ndarray, 
                     f: float,
                     A: float = 1.0,) -> np.ndarray:
     """Считаем значение гармончиеского сигнала в каждый момент времени"""
     
-    return  A*np.sin(t*(2*np.pi*f))
+    return  A*np.sin(time_vector*(2*np.pi*f))
 
-def get_noise(level: float) -> np.ndarray:
+def get_noise(noise_level: float) -> np.ndarray:
     """Генрация помех"""
-    return np.random.normal(loc = 0, scale = level, size = cfg.N)
+    return np.random.normal(loc = 0, scale = noise_level, size = cfg.N)
 
 def get_avp_signals(
                       p_t: np.ndarray,
