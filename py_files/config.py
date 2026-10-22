@@ -28,7 +28,7 @@ R1 = 1
 
 # Параметры шумы
 
-REALESATION_COUNT = 100
+REALESATION_COUNT = 500
 
 # ПАРАМЕТРЫ ЭКСПЕРИМЕНТА 
 
@@ -46,7 +46,7 @@ R_VALUES = np.linspace(R_min, R_max, 10)
 
 STANDART_DIVIATONS_NOISE = A/np.sqrt(np.array(SNR_VALUES))
 
-SNR = 2
+SNR = 5
 NOISE_LEVEL = 0.3
 TIME_LIMIT = {"left": 0,
         "right": 0.15}
